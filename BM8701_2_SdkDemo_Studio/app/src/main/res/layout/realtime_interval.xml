@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textColor="@color/COLOR_4"
+        android:gravity="center"
+        android:textSize="@dimen/Title_3"
+        android:text="实时数据上报间隔（s）" />
+
+
+    <EditText
+        android:id="@+id/interval"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/et_bg"
+        android:gravity="center_vertical"
+        android:hint="请输出1~255之间的数字"
+        android:paddingLeft="10dp"
+        android:textColor="@color/COLOR_3"
+        android:textColorHint="@color/black_30"
+        android:textSize="@dimen/Title_3"
+        android:lines="1"
+        />
+</LinearLayout>

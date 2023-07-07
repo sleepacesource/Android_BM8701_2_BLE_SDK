@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/page_bg"
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textColor="@drawable/label_text_color"
+        android:textSize="@dimen/Title_1"
+        android:text="数据"
+        />
+    <include layout="@layout/divider_line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal" >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/Title_1"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="设备1" />
+        <TextView
+            android:id="@+id/connect_status_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/Title_1"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="未连接" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/device1_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/red"
+        android:textSize="12dp"
+        android:visibility="gone"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@drawable/label_text_color"
+            android:textSize="@dimen/Title_3"
+            android:text="监测垫插紧状态" />
+
+        <TextView
+            android:id="@+id/tv_monitor_connect_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            
+            android:gravity="center"
+            android:textColor="@color/COLOR_3"
+            android:textSize="@dimen/Title_3" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@drawable/label_text_color"
+            android:textSize="@dimen/Title_3"
+            android:text="在离床状态" />
+
+        <TextView
+            android:id="@+id/tv_inbedstatus_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            
+            android:gravity="center"
+            android:textColor="@color/COLOR_3"
+            android:textSize="@dimen/Title_3" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@drawable/label_text_color"
+            android:textSize="@dimen/Title_3"
+            android:text="睡眠状态" />
+
+        <TextView
+            android:id="@+id/tv_sleepStatus_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            
+            android:gravity="center"
+            android:textColor="@color/COLOR_3"
+            android:textSize="@dimen/Title_3" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@drawable/label_text_color"
+            android:textSize="@dimen/Title_3"
+            android:text="@string/real_heart" />
+
+        <TextView
+            android:id="@+id/tv_heart_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            
+            android:gravity="center"
+            android:textColor="@color/COLOR_3"
+            android:textSize="@dimen/Title_3" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@drawable/label_text_color"
+            android:textSize="@dimen/Title_3"
+            android:text="@string/real_breath" />
+
+        <TextView
+            android:id="@+id/tv_breath_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            
+            android:gravity="center"
+            android:textColor="@color/COLOR_3"
+            android:textSize="@dimen/Title_3" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_sync_1"
+        style="@style/common_bt"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/get_report"
+        android:textSize="@dimen/Title_2" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/Title_1"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="设备2" />
+        <TextView
+            android:id="@+id/connect_status_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/Title_1"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="未连接" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/device2_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/red"
+        android:visibility="gone"
+        android:textSize="12dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@drawable/label_text_color"
+            android:textSize="@dimen/Title_3"
+            android:text="监测垫插紧状态" />
+
+        <TextView
+            android:id="@+id/tv_monitor_connect_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            
+            android:gravity="center"
+            android:textColor="@color/COLOR_3"
+            android:textSize="@dimen/Title_3" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@drawable/label_text_color"
+            android:textSize="@dimen/Title_3"
+            android:text="在离床状态" />
+
+        <TextView
+            android:id="@+id/tv_inbedstatus_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            
+            android:gravity="center"
+            android:textColor="@color/COLOR_3"
+            android:textSize="@dimen/Title_3" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@drawable/label_text_color"
+            android:textSize="@dimen/Title_3"
+            android:text="睡眠状态" />
+
+        <TextView
+            android:id="@+id/tv_sleepStatus_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            
+            android:gravity="center"
+            android:textColor="@color/COLOR_3"
+            android:textSize="@dimen/Title_3" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@drawable/label_text_color"
+            android:textSize="@dimen/Title_3"
+            android:text="@string/real_heart" />
+
+        <TextView
+            android:id="@+id/tv_heart_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            
+            android:gravity="center"
+            android:textColor="@color/COLOR_3"
+            android:textSize="@dimen/Title_3" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@drawable/label_text_color"
+            android:textSize="@dimen/Title_3"
+            android:text="@string/real_breath" />
+
+        <TextView
+            android:id="@+id/tv_breath_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            
+            android:gravity="center"
+            android:textColor="@color/COLOR_3"
+            android:textSize="@dimen/Title_3" />
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_sync_2"
+        style="@style/common_bt"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/get_report"
+        android:textSize="@dimen/Title_2" />
+</LinearLayout>

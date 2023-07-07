@@ -1,0 +1,311 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/page_bg"
+    android:scrollbars="none" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_margin"
+        android:paddingRight="@dimen/activity_margin" >
+
+
+
+        <EditText
+            android:id="@+id/et_userid"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/et_bg"
+            android:gravity="center_vertical"
+            android:hint="@string/enter_userid"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:textColor="@color/COLOR_3"
+            android:textColorHint="@color/black_30"
+            android:textSize="@dimen/Title_3"
+            android:visibility="gone"
+            />
+
+        <LinearLayout
+            android:id="@+id/layout_device_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <Button
+            android:id="@+id/btn_connect_device"
+            style="@style/common_bt"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/connect_device"
+            android:textSize="@dimen/Title_2" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/device_infos"
+            android:textColor="@color/COLOR_4"
+            android:textSize="@dimen/Title_4" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@drawable/label_text_color"
+                android:textSize="@dimen/Title_3"
+                android:text="@string/device_id_clear" />
+
+            <TextView
+                android:id="@+id/tv_device_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/execute_progress_win_bg"
+                android:gravity="center"
+                android:textColor="@color/COLOR_3"
+                android:textSize="@dimen/Title_3" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@drawable/label_text_color"
+                android:textSize="@dimen/Title_3"
+                android:text="@string/device_id_cipher" />
+
+            <TextView
+                android:id="@+id/tv_device_id"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/execute_progress_win_bg"
+                android:gravity="center"
+                android:textColor="@color/COLOR_3"
+                android:textSize="@dimen/Title_3" />
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <Button
+                android:id="@+id/btn_get_mac"
+                style="@style/common_bt"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:text="@string/obtain_mac_address"
+                android:textSize="@dimen/Title_2" />
+
+            <TextView
+                android:id="@+id/tv_mac"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/execute_progress_win_bg"
+                android:gravity="center"
+                android:textColor="@color/COLOR_3"
+                android:textSize="@dimen/Title_3" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@drawable/label_text_color"
+                android:textSize="@dimen/Title_3"
+                android:text="@string/firmware_version" />
+
+            <TextView
+                android:id="@+id/tv_device_version"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/execute_progress_win_bg"
+                android:gravity="center"
+                android:textColor="@color/COLOR_3"
+                android:textSize="@dimen/Title_3" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_upgrade_fireware"
+            style="@style/common_bt"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/fireware_update"
+            android:textSize="@dimen/Title_2"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/setting"
+            android:textColor="@color/COLOR_4"
+            android:textSize="@dimen/Title_4" />
+
+        <include layout="@layout/divider_line" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/page_item_height" >
+
+            <TextView
+                android:id="@+id/tv_trans_model"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:textColor="@color/COLOR_4"
+                android:textSize="@dimen/Title_6" />
+
+
+            <TextView
+                android:id="@+id/set_trans_model"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/page_item_height"
+                android:layout_centerVertical="true"
+                android:drawableRight="@drawable/ic_right"
+                android:gravity="left|center_vertical"
+                android:text="@string/set_trans_model"
+                android:textColor="@drawable/label_text_color"
+                android:textSize="@dimen/Title_2" />
+        </RelativeLayout>
+
+        <include layout="@layout/divider_line" />
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/page_item_height" >
+
+            <TextView
+                android:id="@+id/tv_realtime_interval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:textColor="@color/COLOR_4"
+                android:textSize="@dimen/Title_6" />
+
+
+            <TextView
+                android:id="@+id/set_realtime_interval"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/page_item_height"
+                android:layout_centerVertical="true"
+                android:drawableRight="@drawable/ic_right"
+                android:gravity="left|center_vertical"
+                android:text="@string/set_realtime_interval"
+                android:textColor="@drawable/label_text_color"
+                android:textSize="@dimen/Title_2" />
+        </RelativeLayout>
+        
+        <include layout="@layout/divider_line" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/page_item_height" >
+
+            <TextView
+                android:id="@+id/tv_report_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:textColor="@color/COLOR_4"
+                android:textSize="@dimen/Title_6" />
+
+            <TextView
+                android:id="@+id/set_report_time"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/page_item_height"
+                android:layout_centerVertical="true"
+                android:drawableRight="@drawable/ic_right"
+                android:gravity="left|center_vertical"
+                android:text="@string/set_report_time"
+                android:textColor="@drawable/label_text_color"
+                android:textSize="@dimen/Title_2" />
+        </RelativeLayout>
+
+        <include layout="@layout/divider_line" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/page_item_height" >
+
+            <TextView
+                android:id="@+id/tv_bed_config"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:textColor="@color/COLOR_4"
+                android:textSize="@dimen/Title_6" />
+
+            <TextView
+                android:id="@+id/set_bed_config"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/page_item_height"
+                android:layout_centerVertical="true"
+                android:drawableRight="@drawable/ic_right"
+                android:gravity="left|center_vertical"
+                android:text="@string/mattress_config"
+                android:textColor="@drawable/label_text_color"
+                android:textSize="@dimen/Title_2" />
+        </RelativeLayout>
+
+
+        <include layout="@layout/divider_line" />
+    </LinearLayout>
+
+</ScrollView>

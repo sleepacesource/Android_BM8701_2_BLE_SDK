@@ -1,0 +1,2 @@
+include ':app'
+rootProject.name = "BM8701_2_SdkDemo_Studio"
