@@ -178,7 +178,6 @@
             android:layout_marginTop="10dp"
             android:text="@string/fireware_update"
             android:textSize="@dimen/Title_2"
-            android:visibility="gone"
             />
 
         <TextView

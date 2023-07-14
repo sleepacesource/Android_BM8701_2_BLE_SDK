@@ -184,17 +184,32 @@ public class DeviceFragment extends BaseFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		SdkLog.log(TAG + " onResume------------:"+deviceIndex+":"+isVisible());
 		/*if(deviceIndex != DeviceFrameFragment.currentDevice){//页面可见再查设备信息
 			return;
 		}*/
-		if(getDeviceHelper().isConnected(MainActivity.deviceInfos.get(deviceIndex).getAddress())){//已连接设备
+		boolean connected = getDeviceHelper().isConnected(device.getAddress());
+		SdkLog.log(TAG + " onResume------------:"+deviceIndex+",visible:"+isVisible()+",connected:" + connected);
+		if(connected){//已连接设备
 			Calendar calendar = Calendar.getInstance();
-			//calendar.set(Calendar.HOUR_OF_DAY, 14);
-			//calendar.set(Calendar.MINUTE, 58);
+			calendar.set(Calendar.HOUR_OF_DAY, 14);
+			calendar.set(Calendar.MINUTE, 58);
 			int timestamp = (int) (calendar.getTimeInMillis() / 1000);
-			getDeviceHelper().syncTime(MainActivity.deviceInfos.get(deviceIndex).getAddress(), timestamp,28800, (byte)0, (byte)0, resultCallback);
+			getDeviceHelper().syncTime(device.getAddress(), timestamp,28800, (byte)0, (byte)0, resultCallback);
+			initBtnState(true);
 		}
+	}
+
+	private void initBtnState(final boolean connected){
+		mActivity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if(connected){
+					btnConnectDevice.setText(R.string.disconnect);
+				}else{
+					btnConnectDevice.setText(R.string.connect_device);
+				}
+			}
+		});
 	}
 
 	private IResultCallback resultCallback = new IResultCallback() {
@@ -208,12 +223,11 @@ public class DeviceFragment extends BaseFragment {
 					SdkLog.log("syncTime fail:"+cd.getStatus());
 				}
 
-				getDeviceHelper().getDeviceInfo(MainActivity.deviceInfos.get(deviceIndex).getAddress(), this);
+				getDeviceHelper().getDeviceInfo(device.getAddress(), this);
 			}else if(cd.getCallbackType() == BM8701DeviceManager.CallbackType.DEVICE_INFO_GET){
 				if(cd.isSuccess()){
 					SdkLog.log("Get device info suc", cd);
 					com.sleepace.sdk.bm8701_2_ble.domain.DeviceInfo deviceInfo = (com.sleepace.sdk.bm8701_2_ble.domain.DeviceInfo) cd.getResult();
-					DeviceInfo  device =  MainActivity.deviceInfos.get(deviceIndex);
 					device.setDeviceId(deviceInfo.getDeviceId());
 					device.setVersion(deviceInfo.getFirmwareVersion());
 					mActivity.runOnUiThread(new Runnable() {
@@ -413,21 +427,16 @@ public class DeviceFragment extends BaseFragment {
 			if (!isAdded()) {
 				return;
 			}
-			DeviceInfo device1 = MainActivity.deviceInfos.get(0);
-			DeviceInfo device2 = MainActivity.deviceInfos.get(1);
-			if(state.getValue() == CONNECTION_STATE.CONNECTED.getValue()){
-				if(manager.getAddress().equals(device1.getAddress())){
-					toast(device1.getDeviceName()+"已连接");
+
+			if(state == CONNECTION_STATE.CONNECTED){
+				initBtnState(true);
+				if(manager.getAddress().equals(device.getAddress())){
+					toast(device.getDeviceName()+"已连接");
 				}
-				if(manager.getAddress().equals(device2.getAddress())){
-					toast(device2.getDeviceName()+"已连接");
-				}
-			} else{
-				if(manager.getAddress().equals(device1.getAddress())){
-					toast(device1.getDeviceName()+"断开连接");
-				}
-				if(manager.getAddress().equals(device2.getAddress())){
-					toast(device2.getDeviceName()+"断开连接");
+			}else if(state == CONNECTION_STATE.DISCONNECT){
+				initBtnState(false);
+				if(manager.getAddress().equals(device.getAddress())){
+					toast(device.getDeviceName()+"断开连接");
 				}
 			}
 
@@ -466,16 +475,17 @@ public class DeviceFragment extends BaseFragment {
 
 	
 	private void upgradeDevice(FirmwareBean bean) {
+		SdkLog.log(TAG+" upgradeDevice------" + bean);
 		btnUpgrade.setEnabled(false);
 		mActivity.showUpgradeDialog();
 		mActivity.setUpgradeProgress(0);
 		upgrading = true;
 		// InputStream is = getResources().getAssets().open("xxx.des");
-		getDeviceHelper().upgradeDevice(MainActivity.getCurDevice().getAddress(), bean.crcDes, bean.crcBin, bean.is, new IResultCallback<Integer>() {
+		getDeviceHelper().upgradeDevice(device.getAddress(), bean.crcDes, bean.crcBin, "6.08", bean.is, new IResultCallback<Integer>() {
 			@Override
 			public void onResultCallback(IDeviceManager manager, final CallbackData<Integer> cd) {
 				// TODO Auto-generated method stub
-				// SdkLog.log(TAG+" upgradeDevice " + cd);
+				SdkLog.log(TAG+" upgradeDevice " + cd);
 				mActivity.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
@@ -504,34 +514,39 @@ public class DeviceFragment extends BaseFragment {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		super.onClick(v);
-		SdkLog.log("=====:"+v);
 		if (v == btnConnectDevice) {// 233 - 10000
 			if (!BleUtil.isBluetoothOpen(mActivity)) {
 				Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 				startActivityForResult(enabler, BleConfig.REQCODE_OPEN_BT);
 			} else {
-				String strId = etUserId.getText().toString().trim();
-				if (TextUtils.isEmpty(strId)) {
-					Toast.makeText(mActivity, R.string.userid_not_empty, Toast.LENGTH_SHORT).show();
-					return;
-				}
+//				String strId = etUserId.getText().toString().trim();
+//				if (TextUtils.isEmpty(strId)) {
+//					Toast.makeText(mActivity, R.string.userid_not_empty, Toast.LENGTH_SHORT).show();
+//					return;
+//				}
+//				int uid = Integer.parseInt(strId);
+//				if (uid <= 0 || strId.startsWith("0")) {
+//					Toast.makeText(mActivity, R.string.userid_error, Toast.LENGTH_SHORT).show();
+//					return;
+//				}
 
-				int uid = Integer.parseInt(strId);
-				if (uid <= 0 || strId.startsWith("0")) {
-					Toast.makeText(mActivity, R.string.userid_error, Toast.LENGTH_SHORT).show();
-					return;
+				if(getDeviceHelper().isConnected(device.getAddress())) {//已连接设备
+					getDeviceHelper().disconnect(device.getAddress());
+				}else{
+					Intent intent = new Intent(mActivity, SearchBleDeviceActivity.class);
+					SdkLog.log("deviceIndex:"+deviceIndex+","+this);
+					intent.putExtra("deviceIndex",deviceIndex);
+					startActivity(intent);
 				}
-
-				Intent intent = new Intent(mActivity, SearchBleDeviceActivity.class);
-				SdkLog.log("deviceIndex:"+deviceIndex+","+this);
-				intent.putExtra("deviceIndex",deviceIndex);
-				startActivity(intent);
 			}
 		} else if (v == btnUpgrade) {
 			final FirmwareBean firmwareBean = getFirmwareBean();
-			if (firmwareBean == null || MainActivity.getCurDevice() == null) {
+			SdkLog.log(TAG+" upgradeDevice------firmwareBean:" + firmwareBean);
+			if (firmwareBean == null) {
 				return;
 			}
+
+			upgradeDevice(firmwareBean);
 
 		}  else if(v == set_trans_model){
 
@@ -712,11 +727,11 @@ public class DeviceFragment extends BaseFragment {
 
 	private FirmwareBean getFirmwareBean() {
 		try {
-			InputStream is = mActivity.getResources().getAssets().open("MBP89SN-v1.54b(v1.1.04b)-ug-20211221.des");
+			InputStream is = mActivity.getResources().getAssets().open("BM8701-2(LaiBang)-v6.10(v02.04.50)-ug-20230714.bin");
 			FirmwareBean bean = new FirmwareBean();
 			bean.is = is;
-			bean.crcBin = 2255237509L;
-			bean.crcDes = 4278415203L;
+			bean.crcBin = 0L;
+			bean.crcDes = 0L;
 			return bean;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

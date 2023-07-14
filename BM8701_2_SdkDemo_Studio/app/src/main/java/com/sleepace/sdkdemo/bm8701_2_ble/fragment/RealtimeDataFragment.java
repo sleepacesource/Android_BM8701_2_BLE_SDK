@@ -1,16 +1,18 @@
 package com.sleepace.sdkdemo.bm8701_2_ble.fragment;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
-import com.sleepace.sdk.bm8701_2_ble.BM8701DeviceManager;
-import com.sleepace.sdk.bm8701_2_ble.BM8701Helper;
 import com.sleepace.sdk.bm8701_2_ble.domain.HistoryData;
 import com.sleepace.sdk.bm8701_2_ble.domain.RealtimeData;
 import com.sleepace.sdk.bm8701_2_ble.domain.SensorState;
 import com.sleepace.sdk.bm8701_2_ble.interfs.HistoryDataListener;
 import com.sleepace.sdk.bm8701_2_ble.interfs.RealtimeDataListener;
+import com.sleepace.sdk.bm8701_2_ble.interfs.SensorStateListener;
 import com.sleepace.sdk.interfs.IConnectionStateCallback;
 import com.sleepace.sdk.interfs.IDeviceManager;
 import com.sleepace.sdk.interfs.IResultCallback;
@@ -18,33 +20,30 @@ import com.sleepace.sdk.manager.CONNECTION_STATE;
 import com.sleepace.sdk.manager.CallbackData;
 import com.sleepace.sdk.manager.DeviceType;
 import com.sleepace.sdk.util.SdkLog;
-import com.sleepace.sdk.util.StringUtil;
 import com.sleepace.sdkdemo.bm8701_2_ble.MainActivity;
 import com.sleepace.sdkdemo.bm8701_2_ble.R;
 import com.sleepace.sdkdemo.bm8701_2_ble.bean.DeviceInfo;
+import com.sleepace.sdkdemo.bm8701_2_ble.constants.SleepState;
+import com.sleepace.sdkdemo.bm8701_2_ble.constants.SleepStatus;
 
-import android.app.ProgressDialog;
-import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import java.util.Calendar;
+import java.util.List;
 
 public class RealtimeDataFragment extends BaseFragment {
-
-	TextView connect_status_1,monitorConnect1,inBedStatus1,sleepStatus1,heart1,breath1 ,connect_status_2,monitorConnect2,inBedStatus2,sleepStatus2,heart2,breath2;
-	Button btn_sync_2,btn_sync_1;
-
-	TextView device1Tips,device2Tips;
+	private TextView connect_status_1,monitorConnect1,inBedStatus1,sleepStatus1,heart1,breath1 ,connect_status_2,monitorConnect2,inBedStatus2,sleepStatus2,heart2,breath2;
+	private Button btn_sync_2,btn_sync_1;
+	private TextView device1Tips,device2Tips;
+	private DeviceInfo device1 = null, device2 = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
+		if(MainActivity.deviceInfos.size() == 1){
+			device1 = MainActivity.deviceInfos.get(0);
+		}else if(MainActivity.deviceInfos.size() == 2){
+			device1 = MainActivity.deviceInfos.get(0);
+			device2 = MainActivity.deviceInfos.get(1);
+		}
 		View view = inflater.inflate(R.layout.fragment_realtime, null);
 		findView(view);
 		initListener();
@@ -72,43 +71,79 @@ public class RealtimeDataFragment extends BaseFragment {
 		btn_sync_2 = root.findViewById(R.id.btn_sync_2);
 		device1Tips = root.findViewById(R.id.device1_tip);
 		device2Tips = root.findViewById(R.id.device2_tip);
-
-
 	}
-
-
-
-
 
 
 	protected void initListener() {
 		super.initListener();
-		DeviceInfo device1 = MainActivity.deviceInfos.get(0);
-		DeviceInfo device2 = MainActivity.deviceInfos.get(1);
 		getDeviceHelper().addConnectionStateCallback(stateCallback);
 		getDeviceHelper().addRealtimeDataListener(realtimeDataListener);
-		if(getDeviceHelper().isConnected(device1.getAddress())){
+		if(device1!=null && getDeviceHelper().isConnected(device1.getAddress())){
 			getDeviceHelper().realtimeDataStart(device1.getAddress(),device1.getDeviceId(), DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(), (byte)0,(manager,rd)->{
 				SdkLog.log("realtimeDataStart:"+rd.getStatus());
 			});
 		}
 		getDeviceHelper().addHistoryDataListener(historyDataListener);
-		if(getDeviceHelper().isConnected(device2.getAddress())){
+		if(device2!=null && getDeviceHelper().isConnected(device2.getAddress())){
 			getDeviceHelper().realtimeDataStart(device2.getAddress(),device2.getDeviceId(), DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(), (byte)0,(manager,rd)->{
 				SdkLog.log("realtimeDataStart:"+rd.getStatus());
 			});
 		}
-
-
-
-
-
-
+		getDeviceHelper().addOutOfBedSensorStateListener(outOfBedSensorStateListener);
 		btn_sync_1.setOnClickListener(view->{
 			SdkLog.log("同步设备1历史报告");
+			if(device1 != null){
+				Calendar calendar = Calendar.getInstance();
+				int endTime = (int) (calendar.getTimeInMillis() / 1000);
+				calendar.add(Calendar.DATE, -1);
+				int startTime = (int) (calendar.getTimeInMillis() / 1000);
+				getDeviceHelper().historyDownload(device1.getAddress(), device1.getDeviceId(), DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(), (byte) 0,
+						startTime, endTime, (byte) 0, new IResultCallback<List<HistoryData>>() {
+							@Override
+							public void onResultCallback(IDeviceManager manager, CallbackData<List<HistoryData>> cd) {
+								SdkLog.log("historyDownload 1 stime:" + startTime+",etime:" + endTime+",cd:" + cd);
+							}
+						});
+			}
 		});
-
+		btn_sync_2.setOnClickListener(view->{
+			SdkLog.log("同步设备2历史报告");
+			if(device2 != null){
+				Calendar calendar = Calendar.getInstance();
+				int endTime = (int) (calendar.getTimeInMillis() / 1000);
+				calendar.add(Calendar.DATE, -1);
+				int startTime = (int) (calendar.getTimeInMillis() / 1000);
+				getDeviceHelper().historyDownload(device2.getAddress(), device2.getDeviceId(), DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(), (byte) 0,
+						startTime, endTime, (byte) 0, new IResultCallback<List<HistoryData>>() {
+							@Override
+							public void onResultCallback(IDeviceManager manager, CallbackData<List<HistoryData>> cd) {
+								SdkLog.log("historyDownload 2 stime:" + startTime+",etime:" + endTime+",cd:" + cd);
+							}
+						});
+			}
+		});
 	}
+
+	private SensorStateListener outOfBedSensorStateListener = new SensorStateListener() {
+		@Override
+		public void onSensorStateChanged(final IDeviceManager manager, final SensorState state) {
+			if(!isAdded()){
+				return;
+			}
+			mActivity.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					String stateStr = state.getState()==0?"未连接":state.getState()==1?"已连接":"未知";
+					if(device1!=null && state.getDeviceId().equals(device1.getDeviceId())){
+						monitorConnect1.setText(stateStr);
+					}
+					if(device2!=null && state.getDeviceId().equals(device2.getDeviceId())){
+						monitorConnect2.setText(stateStr);
+					}
+				}
+			});
+		}
+	};
 
 
 	private void refreshTextView(TextView textView,String text){
@@ -121,14 +156,13 @@ public class RealtimeDataFragment extends BaseFragment {
 	}
 
 	protected void initUI() {
-		DeviceInfo device1 = MainActivity.deviceInfos.get(0);
-		if(getDeviceHelper().isConnected(device1.getAddress())){
+		if(device1!=null && getDeviceHelper().isConnected(device1.getAddress())){
 			connect_status_1.setText(device1.getDeviceName());
 			if(device1.getCommunityMode() != 1){ //通信模式不为BLE
 				device1Tips.setVisibility(View.VISIBLE);
 				device1Tips.setText("请先将设备通信模式修改为BLE");
 			}
-			getDeviceHelper().outOfBedSensorStatesGet(MainActivity.deviceInfos.get(0).getAddress(),device1.getDeviceId(),DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(),(byte)0,(manager,cb)->{
+			getDeviceHelper().outOfBedSensorStatesGet(device1.getAddress(),device1.getDeviceId(),DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(),(byte)0,(manager,cb)->{
 				if(cb.isSuccess()){
 					SensorState state =  cb.getResult();
 					String stateStr = state.getState()==0?"未连接":state.getState()==1?"已连接":"未知";
@@ -139,16 +173,16 @@ public class RealtimeDataFragment extends BaseFragment {
 				}
 			});
 		} else{
+			connect_status_1.setText("未连接");
 			this.monitorConnect1.setText("--");
 		}
+
 		heart1.setText("--");
 		breath1.setText("--");
 		this.sleepStatus1.setText("--");
 		this.inBedStatus1.setText("--");
 
-
-		DeviceInfo device2 = MainActivity.deviceInfos.get(1);
-		if(getDeviceHelper().isConnected(device2.getAddress())){
+		if(device2!=null && getDeviceHelper().isConnected(device2.getAddress())){
 			connect_status_2.setText(device2.getDeviceName());
 			if(device1.getCommunityMode() != 1){ //通信模式不为BLE
 				device1Tips.setVisibility(View.VISIBLE);
@@ -165,6 +199,7 @@ public class RealtimeDataFragment extends BaseFragment {
 				}
 			});
 		} else{
+			connect_status_2.setText("未连接");
 			this.monitorConnect2.setText("--");
 		}
 		heart2.setText("--");
@@ -172,7 +207,6 @@ public class RealtimeDataFragment extends BaseFragment {
 		this.sleepStatus2.setText("--");
 		this.inBedStatus2.setText("--");
 	}
-
 
 
 	@Override
@@ -193,6 +227,7 @@ public class RealtimeDataFragment extends BaseFragment {
 		getDeviceHelper().removeConnectionStateCallback(stateCallback);
 		getDeviceHelper().removeRealtimeDataListener(realtimeDataListener);
 		getDeviceHelper().removeHistoryDataListener(historyDataListener);
+		getDeviceHelper().removeOutOfBedSensorStateListener(outOfBedSensorStateListener);
 	}
 
 	private HistoryDataListener historyDataListener = new HistoryDataListener(){
@@ -203,51 +238,63 @@ public class RealtimeDataFragment extends BaseFragment {
 	};
 
 	private RealtimeDataListener realtimeDataListener = new RealtimeDataListener(){
-
 		@Override
 		public void onRealtimeData(IDeviceManager manager, RealtimeData realTimeData) {
-			{
-				DeviceInfo device1 = MainActivity.deviceInfos.get(0);
-				DeviceInfo device2 = MainActivity.deviceInfos.get(1);
-				if(manager.getAddress().equals(device1.getAddress())){
-					refreshTextView(heart1,realTimeData.getHeartRate()+"");
-					refreshTextView(breath1,realTimeData.getBreathRate()+"");
-					byte status = realTimeData.getStatus();
-					String statusStr = status==0XFF?"初始化":status==0x00?"离床":"在床";
-					refreshTextView(RealtimeDataFragment.this.inBedStatus1,statusStr);
-					byte sleepState = realTimeData.getSleepState();
-					String sleepStr = sleepState==0XFF?"初始化":sleepState==0xE0?"深睡":sleepState==0xE2?"浅睡":"清醒";
-					refreshTextView(RealtimeDataFragment.this.sleepStatus1,sleepStr);
-				}
-				if(manager.getAddress().equals(device2.getAddress())){
-					refreshTextView(heart2,realTimeData.getHeartRate()+"");
-					refreshTextView(breath2,realTimeData.getBreathRate()+"");
+			if(device1!=null && manager.getAddress().equals(device1.getAddress())){
+				initRealtimeDataView(realTimeData, heart1, breath1, inBedStatus1, sleepStatus1);
+			}
 
-					byte status = realTimeData.getStatus();
-					String statusStr = status==0XFF?"初始化":status==0x00?"离床":"在床";
-					refreshTextView(RealtimeDataFragment.this.inBedStatus2,statusStr);
-					byte sleepState = realTimeData.getSleepState();
-					String sleepStr = sleepState==0XFF?"初始化":sleepState==0xE0?"深睡":sleepState==0xE2?"浅睡":"清醒";
-					refreshTextView(RealtimeDataFragment.this.sleepStatus2,sleepStr);
-				}
+			if(device2!=null && manager.getAddress().equals(device2.getAddress())){
+				initRealtimeDataView(realTimeData, heart2, breath2, inBedStatus2, sleepStatus2);
 			}
 		}
 	};
+
+
+	private void initRealtimeDataView(RealtimeData realTimeData, TextView tvHeart, TextView tvBreath, TextView tvStatus, TextView tvState){
+		String heartRate = "--";
+		String breathRate = "--";
+		String sleepState = "--";
+		byte status = realTimeData.getStatus();
+		if(status != SleepStatus.OUT_OF_BED){
+			heartRate = String.valueOf(realTimeData.getHeartRate());
+			breathRate = String.valueOf(realTimeData.getBreathRate());
+			if(realTimeData.getSleepState()== SleepState.INIT){
+				sleepState = "初始化";
+			}else if(realTimeData.getSleepState()== SleepState.DEEP){
+				sleepState = "深睡";
+			}else if(realTimeData.getSleepState()== SleepState.LIGHT){
+				sleepState = "浅睡";
+			}else if(realTimeData.getSleepState()== SleepState.WAKE){
+				sleepState = "清醒";
+			}
+		}
+
+		String statusStr = status== SleepStatus.INIT ? "初始化" : status==SleepStatus.OUT_OF_BED ? "离床" : "在床";
+		refreshTextView(tvStatus, statusStr);
+		refreshTextView(tvState, sleepState);
+		refreshTextView(tvHeart,heartRate);
+		refreshTextView(tvBreath,breathRate);
+	}
+
 	private IConnectionStateCallback stateCallback = new IConnectionStateCallback() {
 		@Override
 		public void onStateChanged(IDeviceManager manager, final CONNECTION_STATE state) {
-			DeviceInfo device1 = MainActivity.deviceInfos.get(0);
-			DeviceInfo device2 = MainActivity.deviceInfos.get(1);
-			if(state.getValue() == CONNECTION_STATE.CONNECTED.getValue()){
-					if(manager.getAddress().equals(device1.getAddress())){
-						refreshTextView(connect_status_1,device1.getDeviceName());
-					}
-					if(manager.getAddress().equals(device2.getAddress())){
-						refreshTextView(connect_status_2,device2.getDeviceName());
-					}
-				} else{
-					connect_status_1.setText("未连接");
+			if (state == CONNECTION_STATE.CONNECTED) {
+				if (device1!=null && manager.getAddress().equals(device1.getAddress())) {
+					refreshTextView(connect_status_1, device1.getDeviceName());
 				}
+				if (device2!=null && manager.getAddress().equals(device2.getAddress())) {
+					refreshTextView(connect_status_2, device2.getDeviceName());
+				}
+			} else if(state == CONNECTION_STATE.DISCONNECT){
+				if (device1!=null && manager.getAddress().equals(device1.getAddress())) {
+					refreshTextView(connect_status_1, "未连接");
+				}
+				if (device2!=null && manager.getAddress().equals(device2.getAddress())) {
+					refreshTextView(connect_status_2, "未连接");
+				}
+			}
 		}
 	};
 	

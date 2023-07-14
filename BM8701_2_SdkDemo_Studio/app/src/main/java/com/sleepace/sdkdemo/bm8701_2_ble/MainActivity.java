@@ -47,8 +47,6 @@ public class MainActivity extends BaseActivity {
 	private static final ArrayList<BleDevice> deviceList = new ArrayList<BleDevice>();
 	private static BleDevice curDevice = null;
 	private static final HashMap<String, String> devicePower = new HashMap<String, String>();
-	public static final HashMap<String, Boolean> deviceRealtimeDataOpen = new HashMap<String, Boolean>();
-
 
 	public static List<DeviceInfo> deviceInfos = new ArrayList<>();
 

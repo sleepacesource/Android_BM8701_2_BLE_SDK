@@ -154,43 +154,43 @@ public class HistoryDataFragment extends BaseFragment {
 	}
 	
 	private void downloadData(String address, int startTime, int endTime) {
-		progressDialog.show();
-		getDeviceHelper().historyDownload(address, startTime, endTime, DemoApp.USER_SEX, new IResultCallback<List<HistoryData>>() {
-			@Override
-			public void onResultCallback(final IDeviceManager manager, final CallbackData<List<HistoryData>> cd) {
-				// TODO Auto-generated method stub
-				if (!isAdded()) {
-					return;
-				}
-				
-				mActivity.runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						progressDialog.dismiss();
-						if (cd.isSuccess()) {
-							List<HistoryData> list = cd.getResult();
-							final int size = list == null ? 0 : list.size();
-							SdkLog.log(TAG + " historyDownload size:" + size+",list:" + list);
-							if (size > 0) {
-								HistoryData historyData = list.get(0);
-//								SdkLog.log(TAG + " historyDownload first data:" + historyData);
-								Intent intent = new Intent(mActivity, ReportActivity.class);
-								intent.putExtra(ReportActivity.EXTRA_REPORT_TYPE, ReportActivity.REPORT_TYPE_HISOTRY);
-								intent.putExtra(ReportActivity.EXTRA_DATA, historyData);
-								startActivity(intent);
-							}else {
-//								Toast.makeText(mActivity, R.string.tips_no_report, Toast.LENGTH_SHORT).show();
-								showTips(R.string.tips_no_report);
-							}
-						}else {
-//							Toast.makeText(mActivity, R.string.sync_falied, Toast.LENGTH_SHORT).show();
-							showTips(R.string.sync_falied);
-						}
-					}
-				});
-			}
-		});
+//		progressDialog.show();
+//		getDeviceHelper().historyDownload(address, startTime, endTime, DemoApp.USER_SEX, new IResultCallback<List<HistoryData>>() {
+//			@Override
+//			public void onResultCallback(final IDeviceManager manager, final CallbackData<List<HistoryData>> cd) {
+//				// TODO Auto-generated method stub
+//				if (!isAdded()) {
+//					return;
+//				}
+//
+//				mActivity.runOnUiThread(new Runnable() {
+//					@Override
+//					public void run() {
+//						// TODO Auto-generated method stub
+//						progressDialog.dismiss();
+//						if (cd.isSuccess()) {
+//							List<HistoryData> list = cd.getResult();
+//							final int size = list == null ? 0 : list.size();
+//							SdkLog.log(TAG + " historyDownload size:" + size+",list:" + list);
+//							if (size > 0) {
+//								HistoryData historyData = list.get(0);
+////								SdkLog.log(TAG + " historyDownload first data:" + historyData);
+//								Intent intent = new Intent(mActivity, ReportActivity.class);
+//								intent.putExtra(ReportActivity.EXTRA_REPORT_TYPE, ReportActivity.REPORT_TYPE_HISOTRY);
+//								intent.putExtra(ReportActivity.EXTRA_DATA, historyData);
+//								startActivity(intent);
+//							}else {
+////								Toast.makeText(mActivity, R.string.tips_no_report, Toast.LENGTH_SHORT).show();
+//								showTips(R.string.tips_no_report);
+//							}
+//						}else {
+////							Toast.makeText(mActivity, R.string.sync_falied, Toast.LENGTH_SHORT).show();
+//							showTips(R.string.sync_falied);
+//						}
+//					}
+//				});
+//			}
+//		});
 	}
 
 	private void showTips(int msgRes){

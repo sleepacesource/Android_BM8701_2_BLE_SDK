@@ -47,7 +47,6 @@ public class DeviceFrameFragment extends BaseFragment {
             fragmentList.add(new DeviceFragment(1));
             mTitle.add("设备1");
             mTitle.add("设备2");
-
         }
     }
 
