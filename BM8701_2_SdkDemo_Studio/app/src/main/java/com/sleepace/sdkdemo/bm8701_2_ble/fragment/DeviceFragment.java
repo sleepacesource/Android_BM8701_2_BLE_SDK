@@ -189,13 +189,13 @@ public class DeviceFragment extends BaseFragment {
 		}*/
 		boolean connected = getDeviceHelper().isConnected(device.getAddress());
 		SdkLog.log(TAG + " onResume------------:"+deviceIndex+",visible:"+isVisible()+",connected:" + connected);
+		initBtnState(connected);
 		if(connected){//已连接设备
 			Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.HOUR_OF_DAY, 14);
-			calendar.set(Calendar.MINUTE, 58);
+//			calendar.set(Calendar.HOUR_OF_DAY, 14);
+//			calendar.set(Calendar.MINUTE, 58);
 			int timestamp = (int) (calendar.getTimeInMillis() / 1000);
 			getDeviceHelper().syncTime(device.getAddress(), timestamp,28800, (byte)0, (byte)0, resultCallback);
-			initBtnState(true);
 		}
 	}
 
@@ -222,7 +222,6 @@ public class DeviceFragment extends BaseFragment {
 					toast("同步时间失败："+cd.getStatus());
 					SdkLog.log("syncTime fail:"+cd.getStatus());
 				}
-
 				getDeviceHelper().getDeviceInfo(device.getAddress(), this);
 			}else if(cd.getCallbackType() == BM8701DeviceManager.CallbackType.DEVICE_INFO_GET){
 				if(cd.isSuccess()){
@@ -481,7 +480,7 @@ public class DeviceFragment extends BaseFragment {
 		mActivity.setUpgradeProgress(0);
 		upgrading = true;
 		// InputStream is = getResources().getAssets().open("xxx.des");
-		getDeviceHelper().upgradeDevice(device.getAddress(), bean.crcDes, bean.crcBin, "6.08", bean.is, new IResultCallback<Integer>() {
+		getDeviceHelper().upgradeDevice(device.getAddress(), bean.crcDes, bean.crcBin, bean.version, bean.is, new IResultCallback<Integer>() {
 			@Override
 			public void onResultCallback(IDeviceManager manager, final CallbackData<Integer> cd) {
 				// TODO Auto-generated method stub
@@ -723,15 +722,17 @@ public class DeviceFragment extends BaseFragment {
 		InputStream is;
 		long crcBin;
 		long crcDes;
+		String version;
 	}
 
 	private FirmwareBean getFirmwareBean() {
 		try {
-			InputStream is = mActivity.getResources().getAssets().open("BM8701-2(LaiBang)-v6.10(v02.04.50)-ug-20230714.bin");
+			InputStream is = mActivity.getResources().getAssets().open("BM8701-2(LaiBang)-v6.12(v02.04.50)-ug-20230718.bin");
 			FirmwareBean bean = new FirmwareBean();
 			bean.is = is;
 			bean.crcBin = 0L;
 			bean.crcDes = 0L;
+			bean.version = "6.12";
 			return bean;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

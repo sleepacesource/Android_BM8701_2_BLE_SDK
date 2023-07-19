@@ -3,6 +3,7 @@ package com.sleepace.sdkdemo.bm8701_2_ble;
 import android.app.Application;
 
 import com.binatonesdk.demo.util.CrashHandler;
+import com.sleepace.sdk.util.SdkLog;
 
 
 public class DemoApp extends Application {
@@ -24,10 +25,10 @@ public class DemoApp extends Application {
         super.onCreate();
         instance = this;
         CrashHandler.getInstance().init(this);
-//        String logDir = getExternalFilesDir("log").getPath();
-//        SdkLog.setLogDir(logDir);
-//        SdkLog.setSaveLog(true, "opt.txt");
-//        SdkLog.setLogEnable(true);
+        String logDir = getExternalFilesDir("log").getPath();
+        SdkLog.setLogDir(logDir);
+        SdkLog.setSaveLog(true, "log.txt");
+        SdkLog.setLogEnable(true);
     }
 
     @Override

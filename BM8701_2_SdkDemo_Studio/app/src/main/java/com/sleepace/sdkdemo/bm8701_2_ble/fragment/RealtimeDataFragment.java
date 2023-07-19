@@ -44,6 +44,7 @@ public class RealtimeDataFragment extends BaseFragment {
 			device1 = MainActivity.deviceInfos.get(0);
 			device2 = MainActivity.deviceInfos.get(1);
 		}
+		SdkLog.log(TAG+" onCreateView------device1:" + device1+",device2:" + device2);
 		View view = inflater.inflate(R.layout.fragment_realtime, null);
 		findView(view);
 		initListener();
@@ -78,17 +79,7 @@ public class RealtimeDataFragment extends BaseFragment {
 		super.initListener();
 		getDeviceHelper().addConnectionStateCallback(stateCallback);
 		getDeviceHelper().addRealtimeDataListener(realtimeDataListener);
-		if(device1!=null && getDeviceHelper().isConnected(device1.getAddress())){
-			getDeviceHelper().realtimeDataStart(device1.getAddress(),device1.getDeviceId(), DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(), (byte)0,(manager,rd)->{
-				SdkLog.log("realtimeDataStart:"+rd.getStatus());
-			});
-		}
 		getDeviceHelper().addHistoryDataListener(historyDataListener);
-		if(device2!=null && getDeviceHelper().isConnected(device2.getAddress())){
-			getDeviceHelper().realtimeDataStart(device2.getAddress(),device2.getDeviceId(), DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(), (byte)0,(manager,rd)->{
-				SdkLog.log("realtimeDataStart:"+rd.getStatus());
-			});
-		}
 		getDeviceHelper().addOutOfBedSensorStateListener(outOfBedSensorStateListener);
 		btn_sync_1.setOnClickListener(view->{
 			SdkLog.log("同步设备1历史报告");
@@ -97,11 +88,12 @@ public class RealtimeDataFragment extends BaseFragment {
 				int endTime = (int) (calendar.getTimeInMillis() / 1000);
 				calendar.add(Calendar.DATE, -1);
 				int startTime = (int) (calendar.getTimeInMillis() / 1000);
+				SdkLog.log(TAG+ " historyDownload1 startTime:" + startTime+",endTime:" + endTime);
 				getDeviceHelper().historyDownload(device1.getAddress(), device1.getDeviceId(), DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(), (byte) 0,
 						startTime, endTime, (byte) 0, new IResultCallback<List<HistoryData>>() {
 							@Override
 							public void onResultCallback(IDeviceManager manager, CallbackData<List<HistoryData>> cd) {
-								SdkLog.log("historyDownload 1 stime:" + startTime+",etime:" + endTime+",cd:" + cd);
+								SdkLog.log("historyDownload1 cd:" + cd);
 							}
 						});
 			}
@@ -113,15 +105,25 @@ public class RealtimeDataFragment extends BaseFragment {
 				int endTime = (int) (calendar.getTimeInMillis() / 1000);
 				calendar.add(Calendar.DATE, -1);
 				int startTime = (int) (calendar.getTimeInMillis() / 1000);
+				SdkLog.log(TAG+ " historyDownload2 startTime:" + startTime+",endTime:" + endTime);
 				getDeviceHelper().historyDownload(device2.getAddress(), device2.getDeviceId(), DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(), (byte) 0,
 						startTime, endTime, (byte) 0, new IResultCallback<List<HistoryData>>() {
 							@Override
 							public void onResultCallback(IDeviceManager manager, CallbackData<List<HistoryData>> cd) {
-								SdkLog.log("historyDownload 2 stime:" + startTime+",etime:" + endTime+",cd:" + cd);
+								SdkLog.log("historyDownload2 cd:" + cd);
 							}
 						});
 			}
 		});
+	}
+
+	private void realtimeDataStart(DeviceInfo device){
+		SdkLog.log("realtimeDataStart device:"+device);
+		if(device != null){
+			getDeviceHelper().realtimeDataStart(device.getAddress(),device.getDeviceId(), DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(), (byte)0,(manager,rd)->{
+				SdkLog.log("realtimeDataStart:"+rd.getStatus());
+			});
+		}
 	}
 
 	private SensorStateListener outOfBedSensorStateListener = new SensorStateListener() {
@@ -156,11 +158,18 @@ public class RealtimeDataFragment extends BaseFragment {
 	}
 
 	protected void initUI() {
-		if(device1!=null && getDeviceHelper().isConnected(device1.getAddress())){
-			connect_status_1.setText(device1.getDeviceName());
-			if(device1.getCommunityMode() != 1){ //通信模式不为BLE
-				device1Tips.setVisibility(View.VISIBLE);
-				device1Tips.setText("请先将设备通信模式修改为BLE");
+		if(device1!=null){
+			boolean device1Connect = getDeviceHelper().isConnected(device1.getAddress());
+			SdkLog.log(TAG+" initUI device1Connect:" + device1Connect);
+			if(device1Connect){
+				connect_status_1.setText(device1.getDeviceName());
+				if(device1.getCommunityMode() != 1){ //通信模式不为BLE
+					device1Tips.setVisibility(View.VISIBLE);
+					device1Tips.setText("请先将设备通信模式修改为BLE");
+				}
+			}else{
+				connect_status_1.setText("未连接");
+				this.monitorConnect1.setText("--");
 			}
 			getDeviceHelper().outOfBedSensorStatesGet(device1.getAddress(),device1.getDeviceId(),DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(),(byte)0,(manager,cb)->{
 				if(cb.isSuccess()){
@@ -171,6 +180,7 @@ public class RealtimeDataFragment extends BaseFragment {
 					SdkLog.log("outOfBedSensorStatesGet fail:"+cb.getStatus());
 					this.monitorConnect1.setText("状态获取失败："+cb.getStatus());
 				}
+				realtimeDataStart(device1);
 			});
 		} else{
 			connect_status_1.setText("未连接");
@@ -182,11 +192,18 @@ public class RealtimeDataFragment extends BaseFragment {
 		this.sleepStatus1.setText("--");
 		this.inBedStatus1.setText("--");
 
-		if(device2!=null && getDeviceHelper().isConnected(device2.getAddress())){
-			connect_status_2.setText(device2.getDeviceName());
-			if(device1.getCommunityMode() != 1){ //通信模式不为BLE
-				device1Tips.setVisibility(View.VISIBLE);
-				device2Tips.setText("请先将设备通信模式修改为BLE");
+		if(device2!=null){
+			boolean device2Connect = getDeviceHelper().isConnected(device2.getAddress());
+			SdkLog.log(TAG+" initUI device2Connect:" + device2Connect);
+			if(device2Connect){
+				connect_status_2.setText(device2.getDeviceName());
+				if(device1.getCommunityMode() != 1){ //通信模式不为BLE
+					device1Tips.setVisibility(View.VISIBLE);
+					device2Tips.setText("请先将设备通信模式修改为BLE");
+				}
+			}else{
+				connect_status_2.setText("未连接");
+				this.monitorConnect2.setText("--");
 			}
 			getDeviceHelper().outOfBedSensorStatesGet(device2.getAddress(),device2.getDeviceId(),DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(),(byte)0,(manager,cb)->{
 				if(cb.isSuccess()){
@@ -197,6 +214,7 @@ public class RealtimeDataFragment extends BaseFragment {
 					SdkLog.log("outOfBedSensorStatesGet fail:"+cb.getStatus());
 					this.monitorConnect2.setText("状态获取失败："+cb.getStatus());
 				}
+				realtimeDataStart(device2);
 			});
 		} else{
 			connect_status_2.setText("未连接");
@@ -286,6 +304,16 @@ public class RealtimeDataFragment extends BaseFragment {
 				}
 				if (device2!=null && manager.getAddress().equals(device2.getAddress())) {
 					refreshTextView(connect_status_2, device2.getDeviceName());
+				}
+				if(device1!=null){
+					getDeviceHelper().realtimeDataStart(device1.getAddress(),device1.getDeviceId(), DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(), (byte)0,(mgr,rd)->{
+						SdkLog.log("state cb d1 realtimeDataStart:"+rd.getStatus());
+					});
+				}
+				if(device2!=null){
+					getDeviceHelper().realtimeDataStart(device2.getAddress(),device2.getDeviceId(), DeviceType.DEVICE_TYPE_BM8701_2_BLE.getType(), (byte)0,(mgr,rd)->{
+						SdkLog.log("state cb d2 realtimeDataStart:"+rd.getStatus());
+					});
 				}
 			} else if(state == CONNECTION_STATE.DISCONNECT){
 				if (device1!=null && manager.getAddress().equals(device1.getAddress())) {
