@@ -95,5 +95,6 @@
 
   <string name="get_report">同步历史数据</string>
   <string name="mattress_config">床垫配置</string>
+  <string name="out_of_bed_sensitivity">离床灵敏度</string>
   <string name="data">数据</string>
 </resources>

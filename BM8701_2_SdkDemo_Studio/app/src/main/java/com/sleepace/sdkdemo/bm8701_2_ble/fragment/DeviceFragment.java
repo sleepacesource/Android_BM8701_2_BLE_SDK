@@ -77,12 +77,13 @@ public class DeviceFragment extends BaseFragment {
 
 	private  DeviceInfo device;
 	private EditText etUserId;
-	private View vUserDeviceTips, set_trans_model, set_realtime_interval,set_report_time,set_bed_config;
+	private View vUserDeviceTips, set_trans_model, set_realtime_interval,set_report_time,set_bed_config,set_out_of_bed_sensitivity;
 
 	private Button btnConnectDevice, btnMac, btnUpgrade;
-	private TextView tvDeviceName, tvDeviceId,  tvVersion;
+	private TextView tvDeviceName, tvDeviceId,  tvVersion, tvOutOfBedSensitivity;
 
 	private TextView tv_trans_model, tv_realtime_interval,tv_report_time,tv_bed_config,tv_bed_material;
+	private int outOfBedSensitivityIndex = 0;
 
 	private Map<Integer,String> material = new HashMap<Integer,String>(){
 		{
@@ -109,6 +110,8 @@ public class DeviceFragment extends BaseFragment {
 		this.put(1,"BLE");
 	}
 	};
+
+	private String[] out_of_bed_sensitivity_items = {"低灵敏度", "高灵敏度"};
 
 	private boolean upgrading = false;
 	//private LinearLayout deviceListLayout;
@@ -149,10 +152,12 @@ public class DeviceFragment extends BaseFragment {
 		tv_realtime_interval = root.findViewById(R.id.tv_realtime_interval);
 		tv_report_time =  root.findViewById(R.id.tv_report_time);
 		tv_bed_config =  root.findViewById(R.id.tv_bed_config);
+		tvOutOfBedSensitivity =  root.findViewById(R.id.tv_out_of_bed_sensitivity);
 		set_trans_model =  root.findViewById(R.id.set_trans_model);
 		set_realtime_interval =  root.findViewById(R.id.set_realtime_interval);
 		set_report_time = root.findViewById(R.id.set_report_time);
 		set_bed_config = root.findViewById(R.id.set_bed_config);
+		set_out_of_bed_sensitivity = root.findViewById(R.id.set_out_of_bed_sensitivity);
 		//set_bed_material =  root.findViewById(R.id.set_bed_material);
 
 
@@ -167,6 +172,7 @@ public class DeviceFragment extends BaseFragment {
 		this.set_realtime_interval.setOnClickListener(this);
 		this.set_report_time.setOnClickListener(this);
 		this.set_bed_config.setOnClickListener(this);
+		this.set_out_of_bed_sensitivity.setOnClickListener(this);
 	}
 
 	protected void initUI() {
@@ -317,12 +323,23 @@ public class DeviceFragment extends BaseFragment {
 					SdkLog.log("dataUploadConfigGet fail:",cd.getStatus());
 					toast("获取报告上传时间失败："+cd.getStatus());
 				}
+
+				getDeviceHelper().outOfBedSensitivityGet(device.getAddress(), this);
+			}else if(cd.getCallbackType() == BM8701DeviceManager.CallbackType.OUT_OF_BED_SENSITIVITY_GET){
+				if(cd.isSuccess()){
+					outOfBedSensitivityIndex = (byte)cd.getResult();
+				}
+				mActivity.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						initOutOfBedSensitivity();
+					}
+				});
 			}
 		}
 	};
 
 	private void toast(String msg){
-
 		if(!isAdded()){
 			return;
 		}
@@ -390,8 +407,11 @@ public class DeviceFragment extends BaseFragment {
 		this.tv_bed_config.setText(str);
 	}
 
-
-
+	private void initOutOfBedSensitivity() {
+		if(isAdded()){
+			tvOutOfBedSensitivity.setText(out_of_bed_sensitivity_items[outOfBedSensitivityIndex]);
+		}
+	}
 
 	private void initPageState(boolean isConnected) {
 		setPageEnable(isConnected);
@@ -715,6 +735,34 @@ public class DeviceFragment extends BaseFragment {
 				}
 			});
 			view.findViewById(R.id.cancel_button).setOnClickListener((view1 ->dialog.dismiss()));
+		} else if(v == this.set_out_of_bed_sensitivity){
+			AlertDialog.Builder builder = new AlertDialog.Builder(getContext()).setSingleChoiceItems(out_of_bed_sensitivity_items, outOfBedSensitivityIndex, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, final int which) {
+					dialog.dismiss();
+					if(outOfBedSensitivityIndex != which){
+						getDeviceHelper().outOfBedSensitivitySet(device.getAddress(), (byte) which, new IResultCallback() {
+							@Override
+							public void onResultCallback(final IDeviceManager manager, final CallbackData cd) {
+								mActivity.runOnUiThread(new Runnable() {
+									@Override
+									public void run() {
+										if(cd.isSuccess()){
+											toast("Set successfully");
+											outOfBedSensitivityIndex = which;
+											initOutOfBedSensitivity();
+										}else{
+											toast("Set failed");
+										}
+									}
+								});
+							}
+						});
+					}
+				}
+			});
+			AlertDialog dialog = builder.create();
+			dialog.show();
 		}
 	}
 
@@ -727,12 +775,12 @@ public class DeviceFragment extends BaseFragment {
 
 	private FirmwareBean getFirmwareBean() {
 		try {
-			InputStream is = mActivity.getResources().getAssets().open("BM8701-2(LaiBang)-v6.12(v02.04.50)-ug-20230718.bin");
+			InputStream is = mActivity.getResources().getAssets().open("BM8701-2-XGH-BLE_WIFI-v6.16b(v2.05.23b)-ug-20231206.bin");
 			FirmwareBean bean = new FirmwareBean();
 			bean.is = is;
 			bean.crcBin = 0L;
 			bean.crcDes = 0L;
-			bean.version = "6.12";
+			bean.version = "6.16";
 			return bean;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

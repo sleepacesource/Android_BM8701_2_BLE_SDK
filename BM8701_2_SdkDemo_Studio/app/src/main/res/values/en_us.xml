@@ -94,8 +94,9 @@
   <string name="bed_material">Mattress material</string>
   <string name="firmware_version">Version</string>
 
-  <string name="get_report">同步历史数据</string>
+  <string name="get_report">Synchronize historical data</string>
   <string name="mattress_config">mattress configurate</string>
+  <string name="out_of_bed_sensitivity">Off bed sensitivity</string>
   <string name="data">data</string>
 
 
